@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShadowOfObsidian | CTF Player</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* ===== CSS RESET & GLOBAL STYLES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-card: #0f111a;
+            --text-primary: #ffffff;
+            --text-secondary: #8a8fae;
+            --neon-cyan: #00f3ff;
+            --neon-magenta: #ff00ff;
+            --neon-green: #39ff14;
+            --neon-orange: #ff6d00;
+            --border-gray: #222438;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* ===== TYPOGRAPHY ===== */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-mono);
+            font-weight: 700;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            color: var(--neon-cyan);
+            margin-bottom: 2rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--neon-cyan), transparent);
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        a {
+            color: var(--neon-cyan);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        a:hover {
+            color: var(--neon-magenta);
+        }
+
+        /* ===== LAYOUT & CONTAINERS ===== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        section {
+            padding: 5rem 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* ===== NAVIGATION ===== */
+        .nav-container {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 1rem 0;
+            background-color: rgba(10, 10, 15, 0.9);
+            backdrop-filter: blur(10px);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            font-weight: 500;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav-links a:hover {
+            color: var(--neon-cyan);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--neon-cyan);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* ===== HERO SECTION ===== */
+        .hero {
+            text-align: center;
+            position: relative;
+            padding-top: 4rem;
+        }
+
+        .alias {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+            }
+            to {
+                text-shadow: 0 0 20px rgba(0, 243, 255, 0.8), 0 0 30px rgba(255, 0, 255, 0.6);
+            }
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .tagline span {
+            background: rgba(0, 243, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 243, 255, 0.3);
+        }
+
+        .terminal-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(15, 17, 26, 0.8);
+            border: 1px solid var(--border-gray);
+            border-radius: 8px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .terminal-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta));
+        }
+
+        .terminal-line {
+            margin-bottom: 1rem;
+            color: var(--neon-green);
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 1.2rem;
+            background-color: var(--neon-green);
+            margin-left: 5px;
+            animation: blink 1s infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* ===== CTF LOGS SECTION ===== */
+        .ctf-logs {
+            background: rgba(15, 17, 26, 0.5);
+        }
+
+        .log-list {
+            list-style: none;
+        }
+
+        .log-item {
+            position: relative;
+            padding: 2rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-gray);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            background: rgba(15, 17, 26, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .log-item:hover {
+            border-color: var(--neon-cyan);
+            transform: translateX(10px);
+            box-shadow: 0 5px 15px rgba(0, 243, 255, 0.1);
+        }
+
+        .log-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--neon-cyan);
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .log-content {
+            flex: 1;
+        }
+
+        .log-content h3 {
+            color: var(--neon-cyan);
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .log-details {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .log-details span {
+            background: rgba(0, 243, 255, 0.1);
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        /* ===== ACHIEVEMENTS SECTION ===== */
+        .achievement-card {
+            background: rgba(15, 17, 26, 0.8);
+            border: 1px solid var(--border-gray);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .achievement-card:hover {
+            border-color: var(--neon-cyan);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .achievement-icon {
+            font-size: 3rem;
+            color: var(--neon-cyan);
+            margin-bottom: 1rem;
+        }
+
+        /* ===== WRITEUPS SECTION ===== */
+        .writeups-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .writeup-card {
+            background: rgba(15, 17, 26, 0.8);
+            border: 1px solid var(--border-gray);
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .writeup-card:hover {
+            border-color: var(--neon-cyan);
+            transform: translateY(-5px);
+        }
+
+        .writeup-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--neon-cyan);
+        }
+
+        .category-badge {
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            background: rgba(0, 243, 255, 0.1);
+            color: var(--neon-cyan);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(0, 243, 255, 0.3);
+        }
+
+        /* ===== BLOGS SECTION ===== */
+        .blog-card {
+            background: rgba(15, 17, 26, 0.8);
+            border: 1px solid var(--border-gray);
+            border-radius: 8px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+        }
+
+        .blog-card:hover {
+            border-color: var(--neon-cyan);
+        }
+
+        .blog-meta {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        /* ===== CONTACT SECTION ===== */
+        .contact-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+        }
+
+        .social-links {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .social-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(15, 17, 26, 0.5);
+            border: 1px solid var(--border-gray);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            border-color: var(--neon-cyan);
+            transform: translateX(10px);
+        }
+
+        .social-icon {
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .instagram .social-icon { background: #E4405F; color: white; }
+        .github .social-icon { background: #333; color: white; }
+        .email .social-icon { background: #EA4335; color: white; }
+
+        .contact-form {
+            background: rgba(15, 17, 26, 0.8);
+            border: 1px solid var(--border-gray);
+            border-radius: 8px;
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-gray);
+            border-radius: 4px;
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--neon-cyan);
+        }
+
+        .btn {
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta));
+            color: var(--bg-dark);
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 4px;
+            font-family: var(--font-mono);
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 243, 255, 0.3);
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            border-top: 1px solid var(--border-gray);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* ===== SCROLL ANIMATIONS ===== */
+        section {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease;
+        }
+
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== RESPONSIVE DESIGN ===== */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .alias { font-size: 3rem; }
+            h2 { font-size: 2rem; }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .tagline {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .contact-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .log-item {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+            
+            .log-number {
+                min-width: auto;
+            }
+            
+            .log-details {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 1rem;
+            }
+            
+            section {
+                padding: 3rem 0;
+            }
+            
+            .writeups-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(var(--neon-cyan), var(--neon-magenta));
+            border-radius: 4px;
+        }
+
+        /* ===== MATRIX BACKGROUND EFFECT ===== */
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.05;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Matrix Background -->
+    <canvas class="matrix-bg" id="matrixCanvas"></canvas>
+    
+    <!-- Navigation -->
+    <div class="nav-container">
+        <nav class="container">
+            <div class="logo">ShadowOfObsidian</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#ctf-logs">CTF Logs</a></li>
+                <li><a href="#achievements">Achievements</a></li>
+                <li><a href="#writeups">Writeups</a></li>
+                <li><a href="#blogs">Blogs</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </div>
+    
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section id="home" class="hero visible">
+            <div class="container">
+                <h1 class="alias">ShadowOfObsidian</h1>
+                <div class="tagline">
+                    <span>CTF Player</span>
+                    <span>Offensive Security Learner</span>
+                    <span>Cybersecurity Enthusiast</span>
+                </div>
+                <p style="color: var(--neon-green); margin-bottom: 2rem; font-size: 1.1rem;">
+                    Focused on Web Exploitation, Crypto, and Reverse Engineering
+                </p>
+                <div class="terminal-container">
+                    <div class="terminal-line">$ whois ShadowOfObsidian</div>
+                    <div class="terminal-line">> A silent force born from darkness...</div>
+                    <div class="terminal-line">> Cloaked in secrecy...</div>
+                    <div class="terminal-line">> As sharp and untraceable as volcanic glass.</div>
+                    <div class="terminal-line">$ <span id="typing-text"></span><span class="cursor"></span></div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- CTF Logs Section -->
+        <section id="ctf-logs">
+            <div class="container">
+                <h2>CTF Logs</h2>
+                <ul class="log-list">
+                    <li class="log-item">
+                        <div class="log-number">#115</div>
+                        <div class="log-content">
+                            <h3>Hackers Gambit</h3>
+                            <div class="log-details">
+                                <span style="color: var(--neon-cyan);">Categories:</span>
+                                <span>Web</span>
+                                <span>Crypto</span>
+                                <span>Forensics</span>
+                                <span style="color: var(--neon-green); margin-left: auto;">Solo</span>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="log-item">
+                        <div class="log-number">#156</div>
+                        <div class="log-content">
+                            <h3>Bypass CTF</h3>
+                            <div class="log-details">
+                                <span style="color: var(--neon-cyan);">Categories:</span>
+                                <span>Reverse Engineering</span>
+                                <span>Pwn</span>
+                                <span style="color: var(--neon-green); margin-left: auto;">Solo</span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </section>
+        
+        <!-- Achievements Section -->
+        <section id="achievements">
+            <div class="container">
+                <h2>Achievements</h2>
+                <div class="achievement-card">
+                    <div class="achievement-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <h3>TryHackMe Top 5%</h3>
+                    <p>Ranked in top 5% of all TryHackMe users worldwide</p>
+                    <p style="color: var(--neon-green); margin-top: 1rem;">
+                        <i class="fas fa-medal"></i> Elite Hacker
+                    </p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Writeups Section -->
+        <section id="writeups">
+            <div class="container">
+                <h2>Writeups</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                    Detailed solutions and explanations for CTF challenges I've solved
+                </p>
+                <div class="writeups-grid" id="writeupsContainer">
+                    <!-- Writeups will be added dynamically -->
+                </div>
+            </div>
+        </section>
+        
+        <!-- Blogs Section -->
+        <section id="blogs">
+            <div class="container">
+                <h2>Blogs</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                    Thoughts, tutorials, and insights about cybersecurity
+                </p>
+                <div class="blog-card">
+                    <h3>Coming Soon</h3>
+                    <p>My first blog post about cybersecurity concepts is in the works...</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Contact Section -->
+        <section id="contact">
+            <div class="container">
+                <h2>Contact</h2>
+                <div class="contact-container">
+                    <div class="social-links">
+                        <a href="https://instagram.com/shad.owofobsidian" target="_blank" class="social-link instagram">
+                            <div class="social-icon">
+                                <i class="fab fa-instagram"></i>
+                            </div>
+                            <div>
+                                <h3>Instagram</h3>
+                                <p>@shad.owofobsidian</p>
+                            </div>
+                        </a>
+                        <a href="https://github.com/shadowofobsidian" target="_blank" class="social-link github">
+                            <div class="social-icon">
+                                <i class="fab fa-github"></i>
+                            </div>
+                            <div>
+                                <h3>GitHub</h3>
+                                <p>@shadowofobsidian</p>
+                            </div>
+                        </a>
+                        <a href="mailto:shadowofobsidian1111@gmail.com" class="social-link email">
+                            <div class="social-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div>
+                                <h3>Email</h3>
+                                <p>shadowofobsidian1111@gmail.com</p>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <div class="contact-form">
+                        <h3>Send Message</h3>
+                        <form id="messageForm">
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input type="text" id="name" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="message">Message</label>
+                                <textarea id="message" class="form-control" rows="5" required></textarea>
+                            </div>
+                            <button type="submit" class="btn">Send Message</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>© 2024 ShadowOfObsidian. All rights reserved.</p>
+            <p style="margin-top: 0.5rem; font-size: 0.8rem;">
+                Made with <span style="color: var(--neon-magenta);">❤</span> for the cybersecurity community
+            </p>
+        </div>
+    </footer>
+    
+    <script>
+        // Matrix Background Animation
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        const chars = "01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン";
+        const charArray = chars.split("");
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+        const drops = [];
+        
+        for (let i = 0; i < columns; i++) {
+            drops[i] = Math.floor(Math.random() * canvas.height / fontSize);
+        }
+        
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(10, 10, 15, 0.04)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.font = `${fontSize}px 'JetBrains Mono'`;
+            
+            for (let i = 0; i < drops.length; i++) {
+                const char = charArray[Math.floor(Math.random() * charArray.length)];
+                const gradient = ctx.createLinearGradient(0, drops[i] * fontSize, 0, (drops[i] + 1) * fontSize);
+                gradient.addColorStop(0, "#39ff14");
+                gradient.addColorStop(1, "#00f3ff");
+                
+                ctx.fillStyle = gradient;
+                ctx.fillText(char, i * fontSize, drops[i] * fontSize);
+                
+                drops[i]++;
+                
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+            }
+        }
+        
+        // Terminal Typing Effect
+        const typingText = document.getElementById('typing-text');
+        const texts = [
+            "echo 'Hello World'",
+            "ls -la",
+            "cd /root",
+            "nmap -sV target.com",
+            "python3 exploit.py",
+            "whoami",
+            "cat flag.txt"
+        ];
+        let textIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        let isPaused = false;
+        
+        function typeText() {
+            if (isPaused) return;
+            
+            const currentText = texts[textIndex];
+            
+            if (!isDeleting) {
+                typingText.textContent = currentText.substring(0, charIndex + 1);
+                charIndex++;
+                
+                if (charIndex === currentText.length) {
+                    isPaused = true;
+                    setTimeout(() => {
+                        isPaused = false;
+                        isDeleting = true;
+                        setTimeout(typeText, 100);
+                    }, 2000);
+                    return;
+                }
+            } else {
+                typingText.textContent = currentText.substring(0, charIndex - 1);
+                charIndex--;
+                
+                if (charIndex === 0) {
+                    isDeleting = false;
+                    textIndex = (textIndex + 1) % texts.length;
+                }
+            }
+            
+            setTimeout(typeText, isDeleting ? 50 : 100);
+        }
+        
+        // Writeups Data
+        const writeupsData = [
+            {
+                title: "Web Exploitation: SQLi to RCE",
+                category: "Web",
+                summary: "From SQL injection to remote code execution walkthrough",
+                status: "Coming Soon"
+            },
+            {
+                title: "Crypto: RSA CTF Challenges",
+                category: "Crypto",
+                summary: "Solving RSA-based cryptography challenges",
+                status: "Coming Soon"
+            },
+            {
+                title: "Reverse Engineering Basics",
+                category: "Reverse",
+                summary: "Understanding assembly and decompilation",
+                status: "Coming Soon"
+            }
+        ];
+        
+        // Populate Writeups
+        function populateWriteups() {
+            const writeupsContainer = document.getElementById('writeupsContainer');
+            writeupsData.forEach(writeup => {
+                const card = document.createElement('div');
+                card.className = 'writeup-card';
+                card.innerHTML = `
+                    <span class="category-badge">${writeup.category}</span>
+                    <h3>${writeup.title}</h3>
+                    <p>${writeup.summary}</p>
+                    <p style="color: var(--neon-orange); margin-top: 1rem;">
+                        <i class="fas fa-clock"></i> ${writeup.status}
+                    </p>
+                `;
+                writeupsContainer.appendChild(card);
+            });
+        }
+        
+        // Scroll Animations
+        function checkVisibility() {
+            const sections = document.querySelectorAll('section');
+            
+            sections.forEach(section => {
+                const sectionTop = section.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                
+                if (sectionTop < windowHeight * 0.75) {
+                    section.classList.add('visible');
+                }
+            });
+        }
+        
+        // Smooth Scrolling for Navigation
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                
+                window.scrollTo({
+                    top: targetSection.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // Contact Form Submission
+        document.getElementById('messageForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
+            
+            // Here you would normally send this data to a server
+            // For now, we'll just show a success message
+            alert(`Thank you ${name}! Your message has been sent. I'll get back to you at ${email} soon.`);
+            
+            // Reset form
+            this.reset();
+        });
+        
+        // Initialize Everything
+        window.addEventListener('load', () => {
+            // Start animations
+            setInterval(drawMatrix, 50);
+            setTimeout(typeText, 1000);
+            populateWriteups();
+            
+            // Initial visibility check
+            checkVisibility();
+            
+            // Check visibility on scroll
+            window.addEventListener('scroll', checkVisibility);
+            
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            });
+        });
+    </script>
+</body>
+</html>
