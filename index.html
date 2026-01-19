@@ -316,69 +316,6 @@
             margin-bottom: 1rem;
         }
 
-        /* ===== WRITEUPS SECTION ===== */
-        .writeups-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .writeup-card {
-            background: rgba(15, 17, 26, 0.8);
-            border: 1px solid var(--border-gray);
-            border-radius: 8px;
-            padding: 1.5rem;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .writeup-card:hover {
-            border-color: var(--neon-cyan);
-            transform: translateY(-5px);
-        }
-
-        .writeup-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: var(--neon-cyan);
-        }
-
-        .category-badge {
-            display: inline-block;
-            padding: 0.3rem 1rem;
-            background: rgba(0, 243, 255, 0.1);
-            color: var(--neon-cyan);
-            border-radius: 20px;
-            font-size: 0.8rem;
-            margin-bottom: 1rem;
-            border: 1px solid rgba(0, 243, 255, 0.3);
-        }
-
-        /* ===== BLOGS SECTION ===== */
-        .blog-card {
-            background: rgba(15, 17, 26, 0.8);
-            border: 1px solid var(--border-gray);
-            border-radius: 8px;
-            padding: 2rem;
-            transition: all 0.3s ease;
-            margin-bottom: 2rem;
-        }
-
-        .blog-card:hover {
-            border-color: var(--neon-cyan);
-        }
-
-        .blog-meta {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-        }
-
         /* ===== CONTACT SECTION ===== */
         .contact-container {
             display: grid;
@@ -534,10 +471,6 @@
             section {
                 padding: 3rem 0;
             }
-            
-            .writeups-grid {
-                grid-template-columns: 1fr;
-            }
         }
 
         /* ===== SCROLLBAR ===== */
@@ -579,8 +512,6 @@
                 <li><a href="#home">Home</a></li>
                 <li><a href="#ctf-logs">CTF Logs</a></li>
                 <li><a href="#achievements">Achievements</a></li>
-                <li><a href="#writeups">Writeups</a></li>
-                <li><a href="#blogs">Blogs</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
         </nav>
@@ -661,33 +592,6 @@
             </div>
         </section>
         
-        <!-- Writeups Section -->
-        <section id="writeups">
-            <div class="container">
-                <h2>Writeups</h2>
-                <p style="color: var(--text-secondary); margin-bottom: 2rem;">
-                    Detailed solutions and explanations for CTF challenges I've solved
-                </p>
-                <div class="writeups-grid" id="writeupsContainer">
-                    <!-- Writeups will be added dynamically -->
-                </div>
-            </div>
-        </section>
-        
-        <!-- Blogs Section -->
-        <section id="blogs">
-            <div class="container">
-                <h2>Blogs</h2>
-                <p style="color: var(--text-secondary); margin-bottom: 2rem;">
-                    Thoughts, tutorials, and insights about cybersecurity
-                </p>
-                <div class="blog-card">
-                    <h3>Coming Soon</h3>
-                    <p>My first blog post about cybersecurity concepts is in the works...</p>
-                </div>
-            </div>
-        </section>
-        
         <!-- Contact Section -->
         <section id="contact">
             <div class="container">
@@ -749,7 +653,7 @@
     <!-- Footer -->
     <footer>
         <div class="container">
-            <p>© 2024 ShadowOfObsidian. All rights reserved.</p>
+            <p>© 2026 ShadowOfObsidian. All rights reserved.</p>
             <p style="margin-top: 0.5rem; font-size: 0.8rem;">
                 Made with <span style="color: var(--neon-magenta);">❤</span> for the cybersecurity community
             </p>
@@ -844,46 +748,6 @@
             setTimeout(typeText, isDeleting ? 50 : 100);
         }
         
-        // Writeups Data
-        const writeupsData = [
-            {
-                title: "Web Exploitation: SQLi to RCE",
-                category: "Web",
-                summary: "From SQL injection to remote code execution walkthrough",
-                status: "Coming Soon"
-            },
-            {
-                title: "Crypto: RSA CTF Challenges",
-                category: "Crypto",
-                summary: "Solving RSA-based cryptography challenges",
-                status: "Coming Soon"
-            },
-            {
-                title: "Reverse Engineering Basics",
-                category: "Reverse",
-                summary: "Understanding assembly and decompilation",
-                status: "Coming Soon"
-            }
-        ];
-        
-        // Populate Writeups
-        function populateWriteups() {
-            const writeupsContainer = document.getElementById('writeupsContainer');
-            writeupsData.forEach(writeup => {
-                const card = document.createElement('div');
-                card.className = 'writeup-card';
-                card.innerHTML = `
-                    <span class="category-badge">${writeup.category}</span>
-                    <h3>${writeup.title}</h3>
-                    <p>${writeup.summary}</p>
-                    <p style="color: var(--neon-orange); margin-top: 1rem;">
-                        <i class="fas fa-clock"></i> ${writeup.status}
-                    </p>
-                `;
-                writeupsContainer.appendChild(card);
-            });
-        }
-        
         // Scroll Animations
         function checkVisibility() {
             const sections = document.querySelectorAll('section');
@@ -934,7 +798,6 @@
             // Start animations
             setInterval(drawMatrix, 50);
             setTimeout(typeText, 1000);
-            populateWriteups();
             
             // Initial visibility check
             checkVisibility();
@@ -950,5 +813,4 @@
         });
     </script>
 </body>
-
 </html>
